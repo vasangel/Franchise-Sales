@@ -1,0 +1,51 @@
+import pandas as pd
+from random import randint
+
+franchise_id = []
+country_list = ["Greece", "Italy", "Germany", "Spain", "Croatia", "Portugal", "Poland", "France", "Netherlands", "Hungary"]
+sales_quantity = []
+money_sales = []
+
+# Generate franchise IDs
+for _ in range(10):
+    id_str = ""
+    for _ in range(5):
+        x = randint(0, 9)
+        id_str += str(x)
+    franchise_id.append(id_str)
+
+# Generate sales quantity for each quarter (Q1, Q2, Q3, Q4) as 3-digit numbers
+for _ in range(10):
+    quantity = [randint(100, 999) for _ in range(4)]  # Generate 3-digit quantities for 4 quarters
+    sales_quantity.append(quantity)
+
+# Calculate money sales for each quarter
+for quantity in sales_quantity:
+    money_sales.append([randint(3, 50) * q for q in quantity])  # Multiply each quantity by a random factor for each quarter
+
+# Create DataFrame
+df = pd.DataFrame({
+    "Franchise_ID": franchise_id,
+    "Country": country_list,
+    "Q1_Sales_Quantity": [q[0] for q in sales_quantity],
+    "Q2_Sales_Quantity": [q[1] for q in sales_quantity],
+    "Q3_Sales_Quantity": [q[2] for q in sales_quantity],
+    "Q4_Sales_Quantity": [q[3] for q in sales_quantity],
+    "Q1_Money_Sales": [m[0] for m in money_sales],
+    "Q2_Money_Sales": [m[1] for m in money_sales],
+    "Q3_Money_Sales": [m[2] for m in money_sales],
+    "Q4_Money_Sales": [m[3] for m in money_sales]
+})
+
+# Calculate Total Sales and Total Money for each franchise (sum of all quarters)
+df['Total_Sales'] = df[['Q1_Sales_Quantity', 'Q2_Sales_Quantity', 'Q3_Sales_Quantity', 'Q4_Sales_Quantity']].sum(axis=1)
+df['Total_Money'] = df[['Q1_Money_Sales', 'Q2_Money_Sales', 'Q3_Money_Sales', 'Q4_Money_Sales']].sum(axis=1)
+
+# Sort the DataFrame by Total Sales in descending order
+df_sorted = df.sort_values(by='Total_Sales', ascending=False)
+
+# Save the sorted DataFrame as a CSV file
+df_sorted.to_csv(r'C:\Users\Attilas\Documents\franchise_sales_data.csv', index=False)
+
+
+print("Data has been saved as 'franchise_sales_data.csv'.")
